@@ -1,6 +1,9 @@
 
 class Task:
+  id = 1 # ID counter runs every time a task is called it starts from the first ID
   def __init__(self, title, status="Incomplete", assigned_to="Nobody"):
+    self.id = Task.id # save the id to an attribute to enable it being accessed
+    Task.id += 1
     self._title = title
     self._status = status
     self._assigned_to = assigned_to
@@ -39,5 +42,5 @@ class Task:
 
   # Ensures the data returns as a string instead of a object reference
   def __str__(self):
-    return f"The task {self.title} has been assigned to {self.assigned_to}, status: [{self.status}]"
+    return f"{self.id}. {self.assigned_to}, {self.title} - [{self.status}]"
   
