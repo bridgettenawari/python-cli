@@ -14,6 +14,13 @@ class User:
     # Ensures the data returns as a string instead of a object reference
   def __str__(self):
       return f"{self.id}. {self.name}, {self.email} "
+  
+  def to_dict(self):
+        return {
+            "name": self.name,
+            "email": self.email,
+            "projects": [p.to_dict() for p in self.projects]
+        }
 
 # jack = User("Jack", "jack@gmail.com")
 # michael = User("Michael", "michael@gmail.com")
