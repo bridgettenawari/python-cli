@@ -44,3 +44,11 @@ class Task:
   def __str__(self):
     return f"{self.id}. {self.assigned_to}, {self.title} - [{self.status}]"
   
+  def to_dict(self):
+      return {
+            "id": self.id,
+            "title": self.title,
+            "status": self.status,
+            "assigned_to": self.assigned_to
+        }
+  

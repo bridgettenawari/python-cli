@@ -17,6 +17,14 @@ class Project:
   def __str__(self):
     return f"{self.id}. {self.title.capitalize()} - {self.description} [{self.due_date}]"
   
+  def to_dict(self):
+        return {
+            "title": self.title,
+            "description": self.description,
+            "due_date": self.due_date,
+            "tasks": [t.to_dict() for t in self.tasks]
+        }
+  
 # project1 = Project("Prepare supper", "Ugali, Sukuma, Fish.", "20/06/2026")
 # project2 = Project("Wash clothes", "Wash all my clothes.", "28/05/2026")
 # project1.add_task("Cook food")

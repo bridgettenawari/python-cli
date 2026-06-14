@@ -2,14 +2,38 @@ import argparse
 from models.user import User
 from models.project import Project
 from models.task import Task
+from utils.storage import save_data, load_data
 from rich.console import Console
 console = Console()
 users = []
+
+# Loading data
+# Since loaded data was converted from json text to a dictionary, access it using variable["key"]
+# Loop through the raw_data to find data with the key users then loop through the user data to find data with the key projects and loop through the project data to find data with the key tasks
+raw_data = load_data()
+
+# USERS
+for u in raw_data["users"]:
+    user = User(name=u["name"], email=u["email"])
+    # PROJECTS
+    for p in u["projects"]:
+        project = Project(title=p["title"], description=p["description"], due_date=p["due_date"])
+        # TASKS
+        for t in p["tasks"]:
+            task = Task(title=t["title"], status=t["status"], assigned_to=t["assigned_to"])
+            project.add_task(task)
+        user.add_project(project)
+    users.append(user)
+
+
 
 def add_user(args):
   # args saves the data typed in the terminal in an object allowing you to use it to access certain attributes using dot notation
   user = User(name=args.name, email=args.email)
   users.append(user)
+  # Convert objects(classes) to dictionaries bc JSON only understands simple dat atypes like dictionaries and strings and numbers
+  data = {"users": [u.to_dict() for u in users]}
+  save_data(data)
   console.print(f"[green]User added successfully[/green]")
 
 def display_users(args):
@@ -27,9 +51,12 @@ def add_project(args):
       if user.name == args.user:
           project = Project(title=args.title, description=args.description, due_date=args.due_date)
           user.add_project(project)
+          data = {"users": [u.to_dict() for u in users]}
+          save_data(data)
           console.print(f"[green]Project added[/green] {project} to user {user.name}")
           return
   console.print(f"[red]User {args.user} not found[/red]")
+
 
 def display_projects(args):
      for user in users:
@@ -38,20 +65,26 @@ def display_projects(args):
               print(project)
 
 def add_task(args):
-   for user in users:
+  for user in users:
       if user.name == args.user:
-         for project in user.projects:
-            if project.title == args.project:
-               task = Task(title=args.title, description=args.description, due_date=args.due_date, assigned_to=args.assigned_to)
-               project.add_task(task)
+          for project in user.projects:
+              if project.title == args.project:
+                  task = Task(title=args.title, assigned_to=args.assigned_to)
+                  project.add_task(task)
+                  data = {"users": [u.to_dict() for u in users]}
+                  save_data(data)
+                  console.print(f"[green]Task added[/green] {task} to project {project.title}")
+                  return
+
 
 def display_tasks(args):
-   for user in users:
-      if user.name == args.user:
-         for project in user.projects:
-            if project.title == args.project:
-               for task in project.tasks:
-                  print(task)
+    for user in users:
+        if user.name == args.user:
+            for project in user.projects:
+                if project.title == args.project:
+                    for task in project.tasks:
+                        print(task)
+
       
 
 def main():
