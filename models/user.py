@@ -22,9 +22,9 @@ class User:
             "projects": [p.to_dict() for p in self.projects]
         }
 
-# jack = User("Jack", "jack@gmail.com")
-# michael = User("Michael", "michael@gmail.com")
-# jack.add_project("Cook food")
-# print(jack.projects)
-# print(jack)
-# print(michael)
+jack = User("Jack", "jack@gmail.com")
+michael = User("Michael", "michael@gmail.com")
+jack.add_project("Cook food")
+print(jack.projects)
+print(jack)
+print(michael)

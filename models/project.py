@@ -25,10 +25,10 @@ class Project:
             "tasks": [t.to_dict() for t in self.tasks]
         }
   
-# project1 = Project("Prepare supper", "Ugali, Sukuma, Fish.", "20/06/2026")
-# project2 = Project("Wash clothes", "Wash all my clothes.", "28/05/2026")
-# project1.add_task("Cook food")
-# project1.add_task("Fry meat")
-# print(project1.tasks)
-# print(project1)
-# print(project2)
+project1 = Project("Prepare supper", "Ugali, Sukuma, Fish.", "20/06/2026")
+project2 = Project("Wash clothes", "Wash all my clothes.", "28/05/2026")
+project1.add_task("Cook food")
+project1.add_task("Fry meat")
+print(project1.tasks)
+print(project1)
+print(project2)
