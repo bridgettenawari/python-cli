@@ -11,31 +11,16 @@ users = []
 # Since loaded data was converted from json text to a dictionary, access it using variable["key"]
 # Loop through the raw_data to find data with the key users then loop through the user data to find data with the key projects and loop through the project data to find data with the key tasks
 raw_data = load_data()
-
-# USERS
-for u in raw_data["users"]:
-    user = User(name=u["name"], email=u["email"])
-    # PROJECTS
-    for p in u["projects"]:
-        project = Project(title=p["title"], description=p["description"], due_date=p["due_date"])
-        # TASKS
-        for t in p["tasks"]:
-            task = Task(title=t["title"], status=t["status"], assigned_to=t["assigned_to"])
-            project.add_task(task)
-        user.add_project(project)
-    users.append(user)
-
-
+users = raw_data["users"]
 
 def add_user(args):
   # args saves the data typed in the terminal in an object allowing you to use it to access certain attributes using dot notation
   user = User(name=args.name, email=args.email)
   users.append(user)
   # Convert objects(classes) to dictionaries bc JSON only understands simple dat atypes like dictionaries and strings and numbers
-  data = {"users": [u.to_dict() for u in users]}
-  save_data(data)
+  save_data({"users": users})
   console.print(f"[green]User added successfully[/green]")
-
+ 
 def display_users(args):
   # If theres no users print message else loop through each user and display it on the terminal
   if not users:
@@ -48,47 +33,47 @@ def add_project(args):
   # Loop through each user to check if the user's name exists if its the same create a project
   # since user was already defined using the User class use it to access the add project function and pass in the project as a parameter so that it is appended to the list of projects for the user
   for user in users:
-      if user.name == args.user:
-          project = Project(title=args.title, description=args.description, due_date=args.due_date)
-          user.add_project(project)
-          data = {"users": [u.to_dict() for u in users]}
-          save_data(data)
-          console.print(f"[green]Project added[/green] {project} to user {user.name}")
-          return
-  console.print(f"[red]User {args.user} not found[/red]")
+    if user.name == args.user:
+      project = Project(title=args.title, description=args.description, due_date=args.due_date)
+      user.add_project(project)
+      save_data({"users": users})
+      console.print(f"[green]Project added[/green] {project} to user {user.name}")
+      return
+  console.print(f"[red]Project not added to {args.user}[/red]")
 
 
 def display_projects(args):
-     for user in users:
-        if user.name == args.user:
-           for project in user.projects:
-              print(project)
+  for user in users:
+    if user.name == args.user:
+      for project in user.projects:
+        print(project)
 
 def add_task(args):
   for user in users:
-      if user.name == args.user:
-          for project in user.projects:
-              if project.title == args.project:
-                  task = Task(title=args.title, assigned_to=args.assigned_to)
-                  project.add_task(task)
-                  data = {"users": [u.to_dict() for u in users]}
-                  save_data(data)
-                  console.print(f"[green]Task added[/green] {task} to project {project.title}")
-                  return
+    if user.name == args.user:
+      for project in user.projects:
+        if project.title == args.project:
+          task = Task(title=args.title, assigned_to=args.assigned_to)
+          project.add_task(task)
+          save_data({"users": users})
+          console.print(f"[green]Task added[/green] {task} to project {project.title}")
+          return
+  console.print(f"[red]Task not added to {args.project}[/red]")
 
 
 def display_tasks(args):
-    for user in users:
-        if user.name == args.user:
-            for project in user.projects:
-                if project.title == args.project:
-                    for task in project.tasks:
-                        print(task)
+  for user in users:
+    if user.name == args.user:
+      for project in user.projects:
+        if project.title == args.project:
+          for task in project.tasks:
+            print(task)
 
       
 
 def main():
   console.print("[magenta]ᥫ᭡.ִֶָ𓂃Welcome to my CLIᥫ᭡.ִֶָ𓂃[/magenta]\n")
+  console.print("[magenta] Run CLI using python3 main.py (command-name) ((--args 'value') if present)")
 
   parser = argparse.ArgumentParser(description="My Project Manager") # Sets up the CLI
   subparsers = parser.add_subparsers() # Allows us to define multiple commands
@@ -128,6 +113,7 @@ def main():
   parser_display_task = subparsers.add_parser("display-task", help="Displays a project's tasks")
   parser_display_task.add_argument("--user", required=True, help="User who owns the project")
   parser_display_task.add_argument("--project", required=True, help="Name of project")
+  parser_display_task.set_defaults(func=display_tasks)
 
   args = parser.parse_args() # Takes what you typed in the terminal and parses \ converts it to become an object
   if hasattr(args, "func"): # Checks if it has a property called func e.g. func = add_task
@@ -137,4 +123,3 @@ def main():
 
 if __name__ == "__main__":
   main()
-  

@@ -52,3 +52,13 @@ class Task:
             "assigned_to": self.assigned_to
         }
   
+  @classmethod
+  def from_dict(cls, data):
+    task = cls(
+      title=data.get("title"),
+      status=data.get("status", "Incomplete"),
+      assigned_to=data.get("assigned_to", "Nobody")
+    )
+    task.id = data.get("id", task.id)
+    return task
+  

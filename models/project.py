@@ -1,4 +1,5 @@
 # One to many -> one project has many tasks
+from models.task import Task
 class Project:
   id = 1 # ID starts from one
   def __init__(self, title, description, due_date):
@@ -25,10 +26,21 @@ class Project:
             "tasks": [t.to_dict() for t in self.tasks]
         }
   
-project1 = Project("Prepare supper", "Ugali, Sukuma, Fish.", "20/06/2026")
-project2 = Project("Wash clothes", "Wash all my clothes.", "28/05/2026")
-project1.add_task("Cook food")
-project1.add_task("Fry meat")
-print(project1.tasks)
-print(project1)
-print(project2)
+  @classmethod
+  def from_dict(cls, data):
+     project = cls(
+        title = data.get("title"),
+        description = data.get("description"),
+        due_date = data.get("due_date")
+     )
+     project.id = data.get("id", project.id)
+     project.tasks = [Task.from_dict(t) for t in data.get("tasks", [])]
+     return project
+  
+# project1 = Project("Prepare supper", "Ugali, Sukuma, Fish.", "20/06/2026")
+# project2 = Project("Wash clothes", "Wash all my clothes.", "28/05/2026")
+# project1.add_task("Cook food")
+# project1.add_task("Fry meat")
+# print(project1.tasks)
+# print(project1)
+# print(project2)

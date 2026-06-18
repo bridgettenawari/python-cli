@@ -1,4 +1,5 @@
 # One to many -> one user has many projects
+from models.project import Project
 class User:
   id = 1 
   def __init__(self, name, email):
@@ -13,7 +14,7 @@ class User:
 
     # Ensures the data returns as a string instead of a object reference
   def __str__(self):
-      return f"{self.id}. {self.name}, {self.email} "
+      return f"{self.id}. {self.name}, {self.email}"
   
   def to_dict(self):
         return {
@@ -21,10 +22,17 @@ class User:
             "email": self.email,
             "projects": [p.to_dict() for p in self.projects]
         }
+  
+  @classmethod
+  def from_dict(cls, data):
+    user = cls(data.get("name"), data.get("email"))
+    user.id = data.get("id", user.id)
+    user.projects = [Project.from_dict(p) for p in data.get("projects", [])]
+    return user
 
-jack = User("Jack", "jack@gmail.com")
-michael = User("Michael", "michael@gmail.com")
-jack.add_project("Cook food")
-print(jack.projects)
-print(jack)
-print(michael)
+# jack = User("Jack", "jack@gmail.com")
+# michael = User("Michael", "michael@gmail.com")
+# jack.add_project("Cook food")
+# print(jack.projects)
+# print(jack)
+# print(michael)
